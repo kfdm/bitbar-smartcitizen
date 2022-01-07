@@ -9,7 +9,7 @@ from pprint import pprint
 import requests
 from dateutil.parser import isoparse
 
-if "BitBar" in os.environ:
+if "LANG" not in os.environ:
     logging.basicConfig(level=logging.WARNING)
     sys.stdout = open(sys.stdout.fileno(), mode="w", encoding="utf8")
 else:
