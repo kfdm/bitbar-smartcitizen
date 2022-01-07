@@ -4,8 +4,10 @@ import logging
 import os
 import pathlib
 import sys
+from pprint import pprint
 
 import requests
+from dateutil.parser import isoparse
 
 if "BitBar" in os.environ:
     logging.basicConfig(level=logging.WARNING)
@@ -32,9 +34,12 @@ def main():
         result = requests.get(url)
         result.raise_for_status()
         data = result.json()
-        print("{name} - {description} | href=https://smartcitizen.me/kits/{id}".format(**data))
+        pprint(data, stream=sys.stderr)
+        data["ts"] = isoparse(data["last_reading_at"]).astimezone()
+        print("{name} - {ts} | href=https://smartcitizen.me/kits/{id}".format(**data))
+        print(data["description"])
         for sensor in data["data"].get("sensors", []):
-            print("{value} {unit} ({description})".format(**sensor))
+            print(sensor["value"], sensor["unit"], sensor["description"])
 
 
 if __name__ == "__main__":
